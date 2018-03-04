@@ -1,3 +1,21 @@
+# Macで開発環境を雑にセットアップするやつ
+
+## 実際に使うとき
+
+事前に `ansible` だけ用意すればいいはずだけど、`xcode-select --install` を実行しておくと安定するかも
+
+```console
+$ curl -o - 'https://bootstrap.pypa.io/get-pip.py' | sudo python
+$ sudo pip install ansible
+```
+
+`cc`(C 言語のコンパイラ) が無いとプロンプトが出るかもしれないが無視できる(はず)
+
+```console
+$ sudo -v
+$ ansible-playbook -i localhost, -c local playbook/playbook.yml
+```
+
 ## 検証するとき
 
 ### box を作る
