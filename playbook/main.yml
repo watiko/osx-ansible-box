@@ -1,0 +1,88 @@
+- name: homebrewが入っているかの確認
+  stat: path=/usr/local/bin/brew
+  register: brew_command
+- name: homebrewが入っていなかったらインストールする
+  shell: ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  when: not brew_command.stat.exists
+
+
+- name: Command Line Toolsが古いか確認する
+  shell: bash -lc 'brew doctor'
+  register: brew_doctor
+  failed_when: brew_doctor.rc not in [0, 1]
+- name: Command Line Toolsが古かったらインストールする
+  shell: |
+    PLACEHOLDER=/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+    touch $PLACEHOLDER
+    PROD=$(softwareupdate -l | grep "\*.*Command Line" | head -n 1 | awk -F"*" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')
+    echo "install ${PROD}"
+    softwareupdate -i "${PROD}"
+    [[ -f $PLACEHOLDER ]] && rm $PLACEHOLDER
+  when: brew_doctor.rc == 1
+
+- name: homebrew自身を最新にする
+  homebrew: update_homebrew=yes
+
+- name: homebrew-caskを使えるようにする
+  homebrew_tap: tap=caskroom/cask state=present
+
+- name: homebrew-caskでツールをインストールする
+  homebrew_cask: name="{{ item }}"
+  with_items: "{{ homebrew.cask }}"
+
+- name: brewにリポジトリを追加する
+  homebrew_tap: tap="{{ item }}" state=present
+  with_items: "{{ homebrew.tap }}"
+
+- name: homebrewでツールをインストールする 
+  include_tasks: brew-install.yml
+  vars:
+    formula: "{{ item }}"
+  with_items: "{{ homebrew.formula }}"
+
+- name: nodebrew用のディレクトリを作る
+  file:
+    path: ~/.nodebrew/src
+    state: directory
+    mode: 0755
+
+- name: nodeのv8.x.x最新版をインストールする
+  command: bash -lc 'nodebrew install-binary v8'
+  register: install_node
+  failed_when: install_node.rc not in [0, 1]
+
+- name: nodeのv8.x.x最新版をデフォルトにする
+  command: bash -lc 'nodebrew use v8'
+  when: install_node.rc == 0
+
+- name: rbenv関係のformulaをインストールする
+  include_tasks: brew-install.yml
+  vars:
+    formula: "{{ item }}"
+  with_items:
+    - rbenv
+    - ruby-build
+
+
+- name: rbenvの起動用設定を追記
+  blockinfile:
+    create: yes
+    dest: "{{ item }}"
+    block: |
+      export PATH="$HOME/.rbenv/bin:$PATH"
+      eval "$(rbenv init -)"
+  with_items:
+    - ~/.bash_profile
+    - ~/.zshrc
+- name: rbenvで設定されたRubyをインストールする
+  shell: bash -lc "MAKE_OPTS='-j 4' rbenv install --skip-existing {{ rbenv.global }}"
+- name: rbenvで設定されたRubyをデフォルトにする
+  shell: bash -lc "rbenv global {{ rbenv.global }}"
+
+- name: Rubyのgemをインストールする
+  gem:
+    name: "{{ item }}"
+    executable: ~/.rbenv/shims/gem
+    user_install: no
+  with_items: "{{ ruby.gems }}"
+  

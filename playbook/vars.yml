@@ -1,0 +1,42 @@
+homebrew:
+  tap:
+    - caskroom/versions
+    - d12frosted/emacs-plus
+  cask:
+    - atom
+    - docker
+    - google-chrome
+    - intellij-idea-ce
+    - iterm2
+    - java8
+    - sequel-pro
+    - slack
+    - visual-studio-code
+  formula:
+    - awscli
+    - direnv
+    - docker-compose
+    - emacs-plus
+    - git
+    - jq
+    - mysql
+    - nkf
+    - nodebrew
+    - postgres
+    - redis
+    - sbt
+    - shellcheck
+    - tig
+    - tmux
+    - tree
+    - vim
+    - wget
+    - yarn
+    - zsh
+    - zsh-completions
+ruby:
+  gems:
+    - pry
+    - rubocop
+rbenv:
+  global: 2.3.6
