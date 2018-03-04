@@ -62,22 +62,22 @@
   with_items:
     - rbenv
     - ruby-build
+- name: rbenvで設定されたRubyをインストールする
+  shell: bash -lc "MAKE_OPTS='-j 4' rbenv install --skip-existing {{ rbenv.global }}"
+- name: rbenvで設定されたRubyをデフォルトにする
+  shell: bash -lc "rbenv global {{ rbenv.global }}"
 
-
-- name: rbenvの起動用設定を追記
+- name: SHELLの設定を追記
   blockinfile:
     create: yes
     dest: "{{ item }}"
     block: |
+      export PATH="$HOME/.nodebrew/current/bin:$PATH"
       export PATH="$HOME/.rbenv/bin:$PATH"
       eval "$(rbenv init -)"
   with_items:
     - ~/.bash_profile
     - ~/.zshrc
-- name: rbenvで設定されたRubyをインストールする
-  shell: bash -lc "MAKE_OPTS='-j 4' rbenv install --skip-existing {{ rbenv.global }}"
-- name: rbenvで設定されたRubyをデフォルトにする
-  shell: bash -lc "rbenv global {{ rbenv.global }}"
 
 - name: Rubyのgemをインストールする
   gem:
