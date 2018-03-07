@@ -11,9 +11,16 @@ Vagrant.configure('2') do |config|
     node.vm.network :private_network, ip: '192.168.33.11'
     node.vm.synced_folder '.', '/vagrant', type: 'nfs', nfs: true
 
-    node.vm.provision 'ansible' do |ansible|
-      ansible.playbook = 'playbook/playbook.yml'
-      ansible.compatibility_mode = '2.0'
+    node.vm.provision 'shell' do |shell|
+      shell.privileged = true
+      shell.inline = <<-SCRIPT
+        curl -o - 'https://bootstrap.pypa.io/get-pip.py' | python
+        pip install ansible
+      SCRIPT
+    end
+
+    node.vm.provision 'ansible_local' do |ansible|
+      ansible.playbook = '/vagrant/playbook/playbook.yml'
     end
   end
 end
