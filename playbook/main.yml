@@ -26,13 +26,13 @@
 - name: homebrew-caskを使えるようにする
   homebrew_tap: tap=caskroom/cask state=present
 
-- name: homebrew-caskでツールをインストールする
-  homebrew_cask: name="{{ item }}"
-  with_items: "{{ homebrew.cask }}"
-
 - name: brewにリポジトリを追加する
   homebrew_tap: tap="{{ item }}" state=present
   with_items: "{{ homebrew.tap }}"
+
+- name: homebrew-caskでツールをインストールする
+  homebrew_cask: name="{{ item }}"
+  with_items: "{{ homebrew.cask }}"
 
 - name: homebrewでツールをインストールする 
   include_tasks: brew-install.yml
