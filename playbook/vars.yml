@@ -23,6 +23,8 @@ homebrew:
     - nkf
     - nodebrew
     - postgres
+    - python
+    - python@2
     - redis
     - sbt
     - shellcheck

@@ -70,14 +70,15 @@
 - name: SHELLの設定を追記
   blockinfile:
     create: yes
-    dest: "{{ item }}"
+    dest: "{{ item.rc }}"
     block: |
       export PATH="$HOME/.nodebrew/current/bin:$PATH"
       export PATH="$HOME/.rbenv/bin:$PATH"
       eval "$(rbenv init -)"
+      eval "$(direnv hook {{ item.shell }})"
   with_items:
-    - ~/.bash_profile
-    - ~/.zshrc
+    - { rc: ~/.bash_profile, shell: bash }
+    - { rc: ~/.zshrc, shell: zsh }
 
 - name: Rubyのgemをインストールする
   gem:
