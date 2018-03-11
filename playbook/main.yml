@@ -62,10 +62,15 @@
   with_items:
     - rbenv
     - ruby-build
+- name: rbenvで使用されるRubyのバージョンを確認する
+  shell: bash -lc "rbenv version"
+  register: rbenv_ruby_version
 - name: rbenvで設定されたRubyをインストールする
   shell: bash -lc "MAKE_OPTS='-j 4' rbenv install --skip-existing {{ rbenv.global }}"
+  when: not (rbenv_ruby_version.stdout | match(rbenv.global))
 - name: rbenvで設定されたRubyをデフォルトにする
   shell: bash -lc "rbenv global {{ rbenv.global }}"
+  when: not (rbenv_ruby_version.stdout | match(rbenv.global))
 
 - name: SHELLの設定を追記
   blockinfile:
