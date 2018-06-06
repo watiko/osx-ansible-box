@@ -24,7 +24,7 @@
   homebrew: update_homebrew=yes
 
 - name: homebrew-caskを使えるようにする
-  homebrew_tap: tap=caskroom/cask state=present
+  homebrew_tap: tap=homebrew/cask state=present
 
 - name: brewにリポジトリを追加する
   homebrew_tap: tap="{{ item }}" state=present

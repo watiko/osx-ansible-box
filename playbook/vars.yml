@@ -1,6 +1,6 @@
 homebrew:
   tap:
-    - caskroom/versions
+    - homebrew/cask-versions
     - d12frosted/emacs-plus
   cask:
     - atom
