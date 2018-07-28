@@ -72,6 +72,16 @@
   shell: bash -lc "rbenv global {{ rbenv.global }}"
   when: not (rbenv_ruby_version.stdout is match(rbenv.global))
 
+- name: Rictyをインストール
+  copy:
+    src: "{{ item }}"
+    dest: ~/Library/Fonts/
+  with_fileglob:
+    - /usr/local/opt/ricty/share/fonts/Ricty*.ttf
+
+- name: フォントキャッシュを更新
+  shell: fc-cache -vf
+
 - name: SHELLの設定を追記
   blockinfile:
     create: yes
