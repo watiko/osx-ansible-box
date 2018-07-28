@@ -67,16 +67,29 @@
   register: rbenv_ruby_version
 - name: rbenvで設定されたRubyをインストールする
   shell: bash -lc "MAKE_OPTS='-j 4' rbenv install --skip-existing {{ rbenv.global }}"
-  when: not (rbenv_ruby_version.stdout | match(rbenv.global))
+  when: not (rbenv_ruby_version.stdout is match(rbenv.global))
 - name: rbenvで設定されたRubyをデフォルトにする
   shell: bash -lc "rbenv global {{ rbenv.global }}"
-  when: not (rbenv_ruby_version.stdout | match(rbenv.global))
+  when: not (rbenv_ruby_version.stdout is match(rbenv.global))
+
+- name: Rictyをインストール
+  copy:
+    src: "{{ item }}"
+    dest: ~/Library/Fonts/
+  with_fileglob:
+    - /usr/local/opt/ricty/share/fonts/Ricty*.ttf
+
+- name: フォントキャッシュを更新
+  shell: fc-cache -vf
 
 - name: SHELLの設定を追記
   blockinfile:
     create: yes
     dest: "{{ item.rc }}"
     block: |
+      if [ -x /usr/libexec/path_helper ]; then
+      	eval `/usr/libexec/path_helper -s`
+      fi
       export PATH="$HOME/.nodebrew/current/bin:$PATH"
       export PATH="$HOME/.rbenv/bin:$PATH"
       eval "$(rbenv init -)"
