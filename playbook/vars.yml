@@ -2,32 +2,44 @@ homebrew:
   tap:
     - homebrew/cask-versions
     - d12frosted/emacs-plus
+    - sanemat/font
   cask:
     - atom
     - docker
     - google-chrome
+    - homebrew/cask-versions/java8
     - intellij-idea-ce
     - iterm2
-    - java8
+    - java
     - sequel-pro
     - slack
     - visual-studio-code
   formula:
     - awscli
+    - d12frosted/emacs-plus/emacs-plus
     - direnv
     - docker-compose
-    - emacs-plus
+    - fzf
+    - ghq
     - git
+    - imagemagick
     - jq
+    - kubernetes-cli
     - mysql
+    - neovim
     - nkf
     - nodebrew
     - postgres
     - python
+    - python-yq
     - python@2
+    - q
     - redis
+    - rlwrap
+    - sanemat/font/ricty
     - sbt
     - shellcheck
+    - stern
     - tig
     - tmux
     - tree
